@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Space Clicker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="stars"></div>
+
+    <header class="topbar">
+      <h1>Space Clicker</h1>
+      <nav class="top-nav">
+        <button id="statsToggle" class="nav-button">📊 Statistiques</button>
+      </nav>
+      <div class="top-actions">
+        <span id="authStatus">Mode local</span>
+        <button id="authToggle" class="ghost-button">Login / Register</button>
+        <button id="logoutButton" class="ghost-button danger-button" hidden>Déconnexion</button>
+        <button id="saveButton" class="primary-button">Sauvegarder</button>
+      </div>
+      <div id="authPanel" class="auth-panel">
+        <input id="usernameInput" type="text" placeholder="Nom d'utilisateur" autocomplete="username" />
+        <input id="passwordInput" type="password" placeholder="Mot de passe" autocomplete="current-password" />
+        <button id="loginButton">Connexion</button>
+        <button id="registerButton">Créer compte</button>
+      </div>
+    </header>
+
+    <main class="game-layout">
+
+      <!-- ── Panneau gauche : planète ── -->
+      <aside class="planet-panel">
+        <div class="planet-info">
+          <span id="planetName" class="planet-name">Kepler-22b</span>
+          <span id="planetDesc" class="planet-desc">Une planète rocheuse hostile.</span>
+        </div>
+        <div class="planet-wrap">
+          <button id="planetButton" class="planet-button" aria-label="Miner des cristaux">
+            <canvas id="planetCanvas" width="200" height="200"></canvas>
+          </button>
+        </div>
+        <div class="crystal-display">💎 <span id="crystalCount">0</span></div>
+        <div class="prestige-box">
+          <div class="prestige-meta">
+            <span>Progression</span>
+            <strong id="prestigeLabel">0 / 100 000 💎</strong>
+          </div>
+          <div class="progress-track"><div id="prestigeProgress" class="progress-fill"></div></div>
+          <button id="prestigeButton" class="primary-button prestige-button" hidden>Coloniser 🚀</button>
+        </div>
+        <p id="saveStatus" class="save-status">Prêt.</p>
+      </aside>
+
+      <!-- ── Zone centrale : bâtiments animés ── -->
+      <section class="buildings-zone" id="buildingsZone">
+        <!-- Les bandes de bâtiments sont injectées dynamiquement par JS -->
+        <div class="buildings-empty">
+          <span>Achetez votre premier bâtiment pour commencer l'exploitation ! 🚀</span>
+        </div>
+      </section>
+
+      <!-- ── Panneau droit : boutique ── -->
+      <aside class="shop-panel">
+        <section>
+          <h2>Bâtiments</h2>
+          <div id="buildingsList" class="shop-list"></div>
+        </section>
+        <section>
+          <h2>Upgrades</h2>
+          <div id="upgradesList" class="shop-list"></div>
+        </section>
+        <section>
+          <div class="section-heading">
+            <h2>Classement</h2>
+            <button id="leaderboardRefresh" class="icon-button" title="Rafraîchir">↻</button>
+          </div>
+          <ol id="leaderboardList" class="leaderboard-list"></ol>
+        </section>
+      </aside>
+
+    </main>
+
+    <!-- ── Modal Statistiques ── -->
+    <div id="statsModal" class="modal" hidden>
+      <div class="modal-backdrop"></div>
+      <div class="modal-box">
+        <button class="modal-close" id="statsClose">✕</button>
+        <h2>📊 Statistiques</h2>
+        <dl class="stats-list">
+          <div><dt>Cristaux actuels</dt><dd><span id="crystalCountStat">0</span> 💎</dd></div>
+          <div><dt>Cristaux/sec</dt><dd><span id="cpsValue">0</span> 💎</dd></div>
+          <div><dt>Par clic</dt><dd><span id="perClickValue">1</span> 💎</dd></div>
+          <div><dt>Total cumulé</dt><dd><span id="totalCrystals">0</span> 💎</dd></div>
+          <div><dt>Total clics</dt><dd id="totalClicks">0</dd></div>
+          <div><dt>Planètes colonisées</dt><dd id="prestigeCount">0</dd></div>
+          <div><dt>Multiplicateur</dt><dd id="prestigeMultiplier">x1.00</dd></div>
+        </dl>
+
+        <h2>🏆 Succès</h2>
+        <div id="achievementsGrid" class="achievements-grid"></div>
+
+        <h2>🥇 Classement</h2>
+        <div class="section-heading">
+          <button id="leaderboardRefresh" class="icon-button" title="Rafraîchir">↻</button>
+        </div>
+        <ol id="leaderboardList" class="leaderboard-list"></ol>
+      </div>
+    </div>
+
+    <div id="notifications" class="notifications"></div>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "space-clicker",
+  "version": "1.0.0",
+  "description": "Jeu idle/clicker spatial en HTML, CSS, JavaScript vanilla, Node.js, Express et SQLite.",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js",
+    "fresh": "node -e \"require('fs').existsSync('backend/space-clicker.db') && require('fs').unlinkSync('backend/space-clicker.db')\" && node backend/server.js"
+  },
+  "keywords": [
+    "clicker",
+    "idle",
+    "javascript",
+    "express",
+    "sqlite"
+  ],
+  "author": "Space Clicker",
+  "license": "MIT",
+  "dependencies": {
+    "sql.js": "^1.12.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
