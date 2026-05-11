@@ -27,14 +27,17 @@ app.use("/api/auth", authRoutes);
 app.use("/api/save", saveRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 
-// Le frontend est servi par Express pour éviter les problèmes de modules ES en file://.
-app.use(express.static(frontendPath));
-app.get("/", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
+// Routes API introuvables → JSON 404
+app.use("/api", (req, res) => {
+  res.status(404).json({ message: "Route introuvable." });
 });
 
-app.use((req, res) => {
-  res.status(404).json({ message: "Route introuvable." });
+// Le frontend est servi par Express pour éviter les problèmes de modules ES en file://.
+app.use(express.static(frontendPath));
+
+// Toutes les autres routes → index.html (SPA fallback)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 // On initialise la base de données avant d'accepter les connexions.
