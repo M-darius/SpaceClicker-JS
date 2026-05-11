@@ -54,7 +54,7 @@ export const PLANETS = [
   { name: "Tau Ceti e",  icon: "🟡", threshold: 20_000_000,    img: "assets/planets/JaunePlanet.png",  description: "Un monde doré baigné de lumière.",   sprite: { columns: 50, rows: 4,  frameMs: 90  } },
   { name: "Wolf 1061c",  icon: "⚪", threshold: 100_000_000,   img: "assets/planets/WhitePlanet.png",  description: "Une planète sombre et glacée.",      sprite: { columns: 50, rows: 4,  frameMs: 90  } },
   { name: "Trappist-1d", icon: "🔴", threshold: 500_000_000,   img: "assets/planets/RougePlanet.png",  description: "Un monde volcanique en fusion.",     sprite: { columns: 50, rows: 4,  frameMs: 90  } },
-  { name: "55 Cancri e", icon: "🩵", threshold: 2_000_000_000, img: "assets/planets/CyanPlanet.png",   description: "Une planète faite de diamant pur.",  sprite: { columns: 50, rows: 4, frameMs: 90  } }
+  { name: "55 Cancri e", icon: "🩵", threshold: 2_000_000_000, img: "assets/planets/CyanPlanet.png",   description: "Une planète faite de diamant pur.",  sprite: { columns: 80, rows: 6, frameMs: 55  } }
 ];
 
 export const gameState = createDefaultGameState();

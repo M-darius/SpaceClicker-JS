@@ -8,7 +8,7 @@ export function initUI() {
     "crystalCount", "crystalCountStat", "cpsValue", "perClickValue", "totalCrystals", "totalClicks",
     "prestigeCount", "prestigeMultiplier", "prestigeProgress", "prestigeLabel", "prestigeButton",
     "buildingsList", "upgradesList", "achievementsGrid", "notifications", "authPanel", "authStatus",
-    "usernameInput", "passwordInput", "saveStatus", "leaderboardList", "authToggle", "logoutButton",
+    "usernameInput", "passwordInput", "saveStatus", "authToggle", "logoutButton",
     "planetName", "planetDesc"
   ].forEach((id) => {
     els[id] = document.getElementById(id);
@@ -267,7 +267,9 @@ export function toggleAuthPanel(force) {
 }
 
 export function renderLeaderboard(rows) {
-  els.leaderboardList.innerHTML = rows.length
+  const el = document.getElementById("leaderboardList");
+  if (!el) return;
+  el.innerHTML = rows.length
     ? rows.map((row) => `<li><span>#${row.rank} ${row.username}</span><strong>${formatNumber(row.totalCrystalsEver)} 💎</strong></li>`).join("")
     : "<li>Aucun score pour le moment.</li>";
 }

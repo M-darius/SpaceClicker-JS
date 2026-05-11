@@ -90,13 +90,13 @@ export function updateBuildingsZone() {
           img.alt = building.name;
           spritesEl.appendChild(img);
         }
-      } else if (!spriteUrl && currentCount === 0) {
-        // Fallback emoji si pas de sprite
-        for (let i = 0; i < displayCount; i++) {
+      } else if (!spriteUrl && spritesEl.children.length < displayCount) {
+        // Fallback emoji si pas de sprite image disponible
+        for (let i = spritesEl.children.length; i < displayCount; i++) {
           const span = document.createElement("span");
-          span.className = "building-sprite-emoji";
+          span.className = "building-sprite";
           span.textContent = building.icon;
-          span.style.cssText = "font-size:2rem; animation: spriteBob 2s ease-in-out infinite;";
+          span.style.cssText = "font-size:2rem; width:auto; height:auto; filter:none;";
           spritesEl.appendChild(span);
         }
       }

@@ -1,4 +1,5 @@
-const API_BASE_URL = window.SPACE_CLICKER_API_URL || "http://localhost:3000/api";
+// URL relative : fonctionne en local (port 3000) et en production (Render) sans modification.
+const API_BASE_URL = "/api";
 const TOKEN_KEY = "space-clicker-token";
 const USERNAME_KEY = "space-clicker-username";
 
