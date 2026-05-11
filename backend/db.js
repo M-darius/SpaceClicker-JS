@@ -6,9 +6,14 @@ const dbPath = process.env.DATABASE_PATH || path.join(__dirname, "space-clicker.
 
 let db = null;
 
-// Charge ou crée la base de données SQLite via sql.js (100% JavaScript, pas de compilation).
+// Initialise la base de données SQLite via sql.js (pure JS, compatible Render sans compilation native).
+// Le chemin du fichier est configurable via DATABASE_PATH ; par défaut dans le dossier backend/.
 async function initDb() {
-  const SQL = await initSqlJs();
+  // Le fichier WASM doit être localisé explicitement pour fonctionner sur Render.
+  const wasmPath = path.join(require.resolve("sql.js"), "..", "sql-wasm.wasm");
+  const SQL = await initSqlJs({
+    locateFile: () => wasmPath
+  });
 
   if (fs.existsSync(dbPath)) {
     const fileBuffer = fs.readFileSync(dbPath);
@@ -43,19 +48,19 @@ async function initDb() {
     );
   `);
 
-  // Sauvegarde sur disque après chaque écriture.
   persist();
   return db;
 }
 
-// Écrit le fichier .db sur disque pour persister les données entre les redémarrages.
+// Sérialise la base en mémoire et l'écrit sur disque.
+// Sur Render (plan gratuit), ce fichier est perdu à chaque redéploiement.
 function persist() {
   if (!db) return;
   const data = db.export();
   fs.writeFileSync(dbPath, Buffer.from(data));
 }
 
-// Wrapper autour de sql.js pour imiter l'API de better-sqlite3 (prepare/get/all/run).
+// Wrapper autour de sql.js qui imite l'API synchrone de better-sqlite3 (prepare/get/all/run).
 function getDb() {
   if (!db) throw new Error("Base de données non initialisée.");
   return {
@@ -94,12 +99,10 @@ function getDb() {
         }
       };
     },
-    // Exécute plusieurs instructions SQL d'un coup (sans paramètres).
     exec(sql) {
       db.run(sql);
       persist();
     },
-    // Simule les transactions better-sqlite3 : exécute la fonction puis persiste.
     transaction(fn) {
       return function(...args) {
         const result = fn(...args);
