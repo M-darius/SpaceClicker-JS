@@ -1,4 +1,4 @@
-import { gameState } from "./game.js";
+import { gameState } from "./game-state.js";
 
 export const ACHIEVEMENTS = [
   // Clics
@@ -44,7 +44,6 @@ export function setAchievementCallback(onUnlock) {
 }
 
 export function checkAchievements() {
-  // Les succès sont idempotents : une condition validée ne redéclenche jamais la notification.
   ACHIEVEMENTS.forEach((achievement) => {
     const alreadyUnlocked = gameState.achievements.unlocked.includes(achievement.id);
     if (!alreadyUnlocked && achievement.condition(gameState)) {

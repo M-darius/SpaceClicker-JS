@@ -1,4 +1,6 @@
-import { BUILDING_DEFINITIONS, gameState, UPGRADE_DEFINITIONS } from "./game.js";
+import { BUILDING_DEFINITIONS } from "./data/buildings.js";
+import { UPGRADE_DEFINITIONS } from "./data/upgrades.js";
+import { gameState } from "./game-state.js";
 import { formatNumber } from "./ui.js";
 
 const BUILDING_ASSETS = {
@@ -12,7 +14,6 @@ const BUILDING_ASSETS = {
   megastr:  { bg: "assets/batiment/bg_megastr.jpg",  sprite: "assets/batiment/sprite_structure.png" },
 };
 
-// Couleur HUD unique par bâtiment — identité visuelle de chaque ligne
 const BUILDING_COLORS = {
   drone:    '#00E5FF',
   mine:     '#F5A623',
@@ -24,7 +25,6 @@ const BUILDING_COLORS = {
   megastr:  '#FFD700',
 };
 
-// Vitesse de défilement du fond — chaque bâtiment a son rythme
 const SCROLL_SPEEDS = {
   drone: '4s', mine: '14s', refinery: '8s', lab: '10s',
   geotherm: '12s', orbital: '5s', reactor: '6s', megastr: '18s',
@@ -103,18 +103,15 @@ export function updateBuildingsZone() {
       insertBefore ? zoneEl.insertBefore(strip, insertBefore) : zoneEl.appendChild(strip);
     }
 
-    // Compteur
     const countEl = strip.querySelector(`[data-strip-count="${key}"]`);
     if (countEl) countEl.textContent = `×${building.count}`;
 
-    // CPS contribution
     const cpsEl = strip.querySelector(`[data-strip-cps="${key}"]`);
     if (cpsEl) {
       const cps = getBuildingCpsContribution(key);
       cpsEl.textContent = cps > 0 ? `${formatNumber(cps)}/s` : "";
     }
 
-    // Sprites
     const spritesEl = strip.querySelector(`[data-strip-sprites="${key}"]`);
     if (spritesEl) {
       const { sprite: spriteUrl } = BUILDING_ASSETS[key] || {};
@@ -134,7 +131,6 @@ export function updateBuildingsZone() {
     }
   });
 
-  // Nettoyer les strips de bâtiments vendus / sans unités
   zoneEl.querySelectorAll("[data-strip]").forEach(strip => {
     const key = strip.dataset.strip;
     if (!gameState.buildings[key]?.count) strip.remove();

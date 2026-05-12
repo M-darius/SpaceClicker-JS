@@ -6,13 +6,13 @@
   --text:         #e8f4fd;
   --muted:        #7a9bbf;
 
-  /* Ambre — cristaux, ressource précieuse */
+  /* Ambre - cristaux, ressource précieuse */
   --amber:        #F5A623;
   --amber-hot:    #FF7A00;
   --amber-glow:   rgba(245, 166, 35, 0.38);
   --amber-dim:    rgba(245, 166, 35, 0.12);
 
-  /* Cyan — production passive, mécanique */
+  /* Cyan - production passive, mécanique */
   --cyan:         #00E5FF;
   --cyan-glow:    rgba(0, 229, 255, 0.35);
   --cyan-dim:     rgba(0, 229, 255, 0.10);
@@ -42,7 +42,7 @@ body {
   font-family: var(--font-ui);
 }
 
-/* Scanlines — effet terminal subtil */
+/* Scanlines - effet terminal subtil */
 body::after {
   content: "";
   position: fixed;
@@ -227,7 +227,7 @@ h2 { margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700; letter-spacing
   overflow: visible;
 }
 
-/* Canvas d'orbite — superposé et centré sur la planète, non interactif */
+/* Canvas d'orbite - superposé et centré sur la planète, non interactif */
 .orbit-canvas {
   position: absolute;
   top: 50%; left: 50%;
@@ -445,7 +445,7 @@ h2 { margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700; letter-spacing
 }
 .prestige-eta.ready { color: var(--amber); font-weight: 700; }
 
-/* Bouton prestige — pulsant quand disponible */
+/* Bouton prestige - pulsant quand disponible */
 .prestige-button {
   width: 100%; margin-top: 0.15rem;
   background: linear-gradient(135deg, var(--amber-hot) 0%, var(--amber) 55%, rgba(124,58,237,0.6) 100%);
@@ -689,7 +689,7 @@ h2 { margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700; letter-spacing
   pointer-events: none;
   z-index: 0;
 }
-/* Barre verte gauche — achetable */
+/* Barre verte gauche - achetable */
 .shop-card--building::after {
   content: "";
   position: absolute; left: 0; top: 0; bottom: 0;
@@ -1192,15 +1192,14 @@ h2 { margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700; letter-spacing
   position: relative;
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  background: rgba(5, 8, 22, 0.88);
-  border: 1.5px solid var(--co-color);
-  border-radius: 2rem;
-  padding: 0.4rem 1rem 0.4rem 0.55rem;
-  box-shadow: 0 0 20px var(--co-glow), inset 0 0 10px rgba(255,255,255,0.03);
-  backdrop-filter: blur(6px);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 16px;
+  box-shadow: none;
+  backdrop-filter: none;
   white-space: nowrap;
-  transition: box-shadow 0.15s, border-color 0.15s;
+  transition: filter 0.15s;
 }
 
 /* Traîne (pointe vers la gauche, sens du mouvement droite par défaut) */
@@ -1239,8 +1238,7 @@ h2 { margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700; letter-spacing
 }
 
 .cosmic-object:hover .co-body {
-  box-shadow: 0 0 40px var(--co-glow), 0 0 70px var(--co-glow), inset 0 0 10px rgba(255,255,255,0.07);
-  border-color: #fff;
+  filter: drop-shadow(0 0 14px var(--co-glow)) drop-shadow(0 0 30px var(--co-glow));
 }
 
 .co-icon   { font-size: 1.5rem; line-height: 1; }

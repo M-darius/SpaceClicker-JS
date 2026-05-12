@@ -1,4 +1,5 @@
-import { gameState, addActiveBonus } from "./game.js";
+import { gameState } from "./game-state.js";
+import { addActiveBonus } from "./game-rules.js";
 import { formatNumber } from "./ui.js";
 
 const CONFIRM_MS = 6_000;
@@ -87,9 +88,8 @@ function getSpawnConfig(typeId) {
 
   switch (typeId) {
     case "asteroid": {
-      // Haut-droite → bas-gauche en diagonal, rotation
       const startX = w * 0.45 + Math.random() * w * 0.45;
-      const ms = 4_000 + Math.random() * 2_500;
+      const ms = 9_000 + Math.random() * 4_000;
       return {
         x: startX, y: -110,
         animClass: "co-fly-asteroid",
@@ -103,7 +103,6 @@ function getSpawnConfig(typeId) {
       };
     }
     case "solar_storm": {
-      // Depuis droite, arc descendant puis remontant
       const startY = h * 0.08 + Math.random() * h * 0.25;
       const ms = 10_000 + Math.random() * 4_000;
       const arcDip = 50 + Math.random() * 80;
@@ -119,7 +118,6 @@ function getSpawnConfig(typeId) {
       };
     }
     case "quasar": {
-      // Bas-gauche → haut-droite en diagonale, scale pulse
       const startX = w * 0.03 + Math.random() * w * 0.12;
       const ms = 8_000 + Math.random() * 4_000;
       return {
@@ -134,7 +132,6 @@ function getSpawnConfig(typeId) {
       };
     }
     case "black_hole": {
-      // Gauche → droite très lentement, oscillation verticale
       const startY = h * 0.2 + Math.random() * h * 0.5;
       const ms = 16_000 + Math.random() * 6_000;
       const wobble = 25 + Math.random() * 35;
@@ -173,8 +170,6 @@ function spawnObject() {
   obj.innerHTML = `
     <div class="co-body">
       <span class="co-icon">${type.icon}</span>
-      <span class="co-label">${type.label}</span>
-      <span class="co-desc">${type.description}</span>
     </div>
   `;
 
@@ -252,7 +247,6 @@ function showConfirmPopup(type, obj) {
     </div>
   `;
 
-  // Positionne le popup au-dessus de l'objet, ajuste si hors écran
   const objRect = obj.getBoundingClientRect();
   const PW = 230, PH = 210;
   let left = objRect.left + objRect.width / 2 - PW / 2;
@@ -265,7 +259,6 @@ function showConfirmPopup(type, obj) {
   document.body.appendChild(popup);
   requestAnimationFrame(() => popup.classList.add("co-popup--visible"));
 
-  // Lance le timer visuel
   const fill = popup.querySelector(".co-popup-timer-fill");
   fill.style.setProperty("--confirm-ms", `${CONFIRM_MS}ms`);
   requestAnimationFrame(() => fill.classList.add("co-popup-timer-fill--running"));

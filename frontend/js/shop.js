@@ -1,4 +1,6 @@
-import { gameState, getBuildingBulkCost, recalculateClickPower, recalculateCps, UPGRADE_DEFINITIONS } from "./game.js";
+import { UPGRADE_DEFINITIONS } from "./data/upgrades.js";
+import { gameState } from "./game-state.js";
+import { getBuildingBulkCost, recalculateClickPower, recalculateCps } from "./game-rules.js";
 
 let shopUpdateHandler = () => {};
 let achievementHandler = () => {};

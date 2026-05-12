@@ -1,5 +1,8 @@
 import { ACHIEVEMENTS } from "./achievements.js";
-import { BUILDING_DEFINITIONS, gameState, getBuildingBulkCost, getCurrentPlanet, getCurrentThreshold, getMaxBuyableCount, getNextPlanet, UPGRADE_DEFINITIONS } from "./game.js";
+import { BUILDING_DEFINITIONS } from "./data/buildings.js";
+import { UPGRADE_DEFINITIONS } from "./data/upgrades.js";
+import { gameState } from "./game-state.js";
+import { getBuildingBulkCost, getCurrentPlanet, getCurrentThreshold, getMaxBuyableCount, getNextPlanet } from "./game-rules.js";
 
 const CRYSTAL_IMG = `<img class="crystal-icon" src="assets/batiment/Crystals.png" alt="💎">`;
 
