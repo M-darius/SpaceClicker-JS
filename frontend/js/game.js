@@ -81,12 +81,22 @@ export function createDefaultGameState() {
     crystalsPerClick: 1,
     crystalsPerSecond: 0,
     totalClicks: 0,
-    prestigeCount: 0,       // nombre de planètes colonisées
+    prestigeCount: 0,
     prestigeMultiplier: 1,
     buildings: cloneBuildings(),
     upgrades: defaultUpgrades(),
-    achievements: { unlocked: [] }
+    achievements: { unlocked: [] },
+    lastSaved: null
   };
+}
+
+export function computeOfflineGains(savedState) {
+  if (!savedState?.lastSaved || !(savedState.crystalsPerSecond > 0)) return null;
+  const MAX_SECS = 8 * 3600; // 8h plafond standard idle
+  const elapsed = Math.min((Date.now() - savedState.lastSaved) / 1000, MAX_SECS);
+  if (elapsed < 30) return null;
+  const gained = Math.floor(savedState.crystalsPerSecond * elapsed);
+  return { elapsed, gained, cps: savedState.crystalsPerSecond };
 }
 
 // Retourne la planète actuelle selon le nombre de prestiges effectués.
@@ -136,6 +146,28 @@ export function mineCrystal() {
 export function getBuildingCost(buildingKey) {
   const building = gameState.buildings[buildingKey];
   return Math.ceil(building.baseCost * Math.pow(1.15, building.count));
+}
+
+export function getBuildingBulkCost(buildingKey, qty) {
+  const building = gameState.buildings[buildingKey];
+  let total = 0;
+  for (let i = 0; i < qty; i++) {
+    total += Math.ceil(building.baseCost * Math.pow(1.15, building.count + i));
+  }
+  return total;
+}
+
+export function getMaxBuyableCount(buildingKey) {
+  const building = gameState.buildings[buildingKey];
+  let qty = 0;
+  let spent = 0;
+  while (qty < 10_000) {
+    const next = Math.ceil(building.baseCost * Math.pow(1.15, building.count + qty));
+    if (spent + next > gameState.crystals) break;
+    spent += next;
+    qty++;
+  }
+  return qty;
 }
 
 export function recalculateCps() {

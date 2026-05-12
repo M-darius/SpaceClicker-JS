@@ -1,16 +1,20 @@
 import { checkAchievements, setAchievementCallback } from "./achievements.js";
 import { fetchLeaderboard, getSession, loadSave, login, logout, register, saveGame } from "./api.js";
-import { canPrestige, gameState, mergeLoadedState, mineCrystal, performPrestige, resetGame, setGameCallbacks, startGameLoop } from "./game.js";
+import { canPrestige, computeOfflineGains, gameState, getMaxBuyableCount, mergeLoadedState, mineCrystal, performPrestige, resetGame, setGameCallbacks, startGameLoop } from "./game.js";
 import { buyBuilding, buyUpgrade, setShopCallbacks } from "./shop.js";
 import { initBuildingsZone, updateBuildingsZone } from "./buildings-zone.js";
 import {
+  getBuyMode,
   getCredentials,
   initUI,
   renderLeaderboard,
   setAuthStatus,
+  setBuyMode,
   setSaveStatus,
   showAchievementNotification,
   showClickParticle,
+  showOfflineModal,
+  showPlanetRipple,
   toggleAuthPanel,
   updateUI
 } from "./ui.js";
@@ -21,6 +25,7 @@ async function persistGame(manual = false) {
     if (manual) setSaveStatus("Connectez-vous pour sauvegarder.");
     return;
   }
+  gameState.lastSaved = Date.now();
   try {
     const result = await saveGame(gameState);
     setSaveStatus(manual ? result.message : "Auto-save OK");
@@ -39,18 +44,27 @@ async function refreshLeaderboard() {
 
 async function loadExistingSave() {
   const { token } = getSession();
-  if (token) {
-    try {
-      const remoteSave = await loadSave();
-      if (remoteSave?.gameState) {
-        mergeLoadedState(remoteSave.gameState);
-        setSaveStatus("Sauvegarde chargée.");
+  if (!token) return;
+  try {
+    const remoteSave = await loadSave();
+    if (remoteSave?.gameState) {
+      const offline = computeOfflineGains(remoteSave.gameState);
+      mergeLoadedState(remoteSave.gameState);
+
+      if (offline && offline.gained > 0) {
+        gameState.crystals              += offline.gained;
+        gameState.totalCrystalsEver     += offline.gained;
+        gameState.crystalsThisPrestige  += offline.gained;
+        updateUI();
+        showOfflineModal(offline);
       } else {
-        setSaveStatus("Nouvelle partie.");
+        setSaveStatus("Sauvegarde chargée.");
       }
-    } catch {
-      setSaveStatus("Sauvegarde distante indisponible.");
+    } else {
+      setSaveStatus("Nouvelle partie.");
     }
+  } catch {
+    setSaveStatus("Sauvegarde distante indisponible.");
   }
 }
 
@@ -76,11 +90,22 @@ function bindEvents() {
   document.getElementById("planetButton").addEventListener("click", (event) => {
     const amount = mineCrystal();
     showClickParticle(event.clientX, event.clientY, amount);
+    showPlanetRipple();
+  });
+
+  document.querySelectorAll(".bulk-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const raw = btn.dataset.qty;
+      setBuyMode(raw === "max" ? "max" : parseInt(raw, 10));
+    });
   });
 
   document.getElementById("buildingsList").addEventListener("click", (event) => {
     const button = event.target.closest("[data-building]");
-    if (button) buyBuilding(button.dataset.building);
+    if (!button) return;
+    const mode = getBuyMode();
+    const qty = mode === "max" ? getMaxBuyableCount(button.dataset.building) : mode;
+    if (qty > 0) buyBuilding(button.dataset.building, qty);
   });
 
   document.getElementById("upgradesList").addEventListener("click", (event) => {

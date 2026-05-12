@@ -1,4 +1,4 @@
-import { gameState, getBuildingCost, recalculateClickPower, recalculateCps, UPGRADE_DEFINITIONS } from "./game.js";
+import { gameState, getBuildingBulkCost, recalculateClickPower, recalculateCps, UPGRADE_DEFINITIONS } from "./game.js";
 
 let shopUpdateHandler = () => {};
 let achievementHandler = () => {};
@@ -8,16 +8,15 @@ export function setShopCallbacks({ onUpdate, onAchievements } = {}) {
   achievementHandler = onAchievements || achievementHandler;
 }
 
-export function buyBuilding(buildingKey) {
+export function buyBuilding(buildingKey, qty = 1) {
   const building = gameState.buildings[buildingKey];
-  if (!building) return false;
+  if (!building || qty < 1) return false;
 
-  // Le coût est lu au moment de l'achat pour suivre le scaling exponentiel.
-  const cost = getBuildingCost(buildingKey);
+  const cost = getBuildingBulkCost(buildingKey, qty);
   if (gameState.crystals < cost) return false;
 
   gameState.crystals -= cost;
-  building.count += 1;
+  building.count += qty;
   recalculateCps();
   achievementHandler();
   shopUpdateHandler();

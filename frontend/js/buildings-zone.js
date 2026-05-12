@@ -1,6 +1,6 @@
-import { BUILDING_DEFINITIONS, gameState } from "./game.js";
+import { BUILDING_DEFINITIONS, gameState, UPGRADE_DEFINITIONS } from "./game.js";
+import { formatNumber } from "./ui.js";
 
-// Correspondance bâtiment → image de fond + sprite
 const BUILDING_ASSETS = {
   drone:    { bg: "assets/batiment/bg_drone.jpg",    sprite: "assets/batiment/sprite_drone.png"     },
   mine:     { bg: "assets/batiment/bg_mine.jpg",     sprite: "assets/batiment/sprite_mine.png"      },
@@ -12,9 +12,27 @@ const BUILDING_ASSETS = {
   megastr:  { bg: "assets/batiment/bg_megastr.jpg",  sprite: "assets/batiment/sprite_structure.png" },
 };
 
-const SPRITE_WIDTH = 80;
-const SPRITE_GAP = 10;
-const SPRITE_SIDE_PADDING = 16;
+// Couleur HUD unique par bâtiment — identité visuelle de chaque ligne
+const BUILDING_COLORS = {
+  drone:    '#00E5FF',
+  mine:     '#F5A623',
+  refinery: '#FF7A00',
+  lab:      '#7C3AED',
+  geotherm: '#EF476F',
+  orbital:  '#00CFFF',
+  reactor:  '#2DD4BF',
+  megastr:  '#FFD700',
+};
+
+// Vitesse de défilement du fond — chaque bâtiment a son rythme
+const SCROLL_SPEEDS = {
+  drone: '4s', mine: '14s', refinery: '8s', lab: '10s',
+  geotherm: '12s', orbital: '5s', reactor: '6s', megastr: '18s',
+};
+
+const SPRITE_WIDTH        = 80;
+const SPRITE_GAP          = 10;
+const SPRITE_SIDE_PADDING = 20;
 
 let zoneEl = null;
 
@@ -23,105 +41,115 @@ export function initBuildingsZone() {
 }
 
 function getSpriteCapacity(strip) {
-  const availableWidth = strip.clientWidth - SPRITE_SIDE_PADDING * 2;
-  if (availableWidth <= 0) return 1;
-  return Math.max(1, Math.floor((availableWidth + SPRITE_GAP) / (SPRITE_WIDTH + SPRITE_GAP)));
+  const available = strip.clientWidth - SPRITE_SIDE_PADDING * 2;
+  if (available <= 0) return 1;
+  return Math.max(1, Math.floor((available + SPRITE_GAP) / (SPRITE_WIDTH + SPRITE_GAP)));
+}
+
+function getBuildingCpsContribution(key) {
+  const building = gameState.buildings[key];
+  if (building.count === 0) return 0;
+  let buildingMult = 1, globalMult = 1;
+  Object.entries(UPGRADE_DEFINITIONS).forEach(([k, upg]) => {
+    if (!gameState.upgrades[k]) return;
+    if (upg.applies === key)      buildingMult *= upg.multiplier;
+    if (upg.applies === 'global') globalMult   *= upg.multiplier;
+  });
+  return building.count * building.baseCps * buildingMult * globalMult * gameState.prestigeMultiplier;
 }
 
 export function updateBuildingsZone() {
   if (!zoneEl) return;
 
-  // Bâtiments possédés, dans l'ordre de définition
-  const ownedBuildings = Object.entries(gameState.buildings)
-    .filter(([, b]) => b.count > 0);
+  const ownedBuildings = Object.entries(gameState.buildings).filter(([, b]) => b.count > 0);
 
   if (ownedBuildings.length === 0) {
     zoneEl.innerHTML = `
       <div class="buildings-empty">
-        <span>Achetez votre premier bâtiment pour commencer l'exploitation ! 🚀</span>
+        <div class="empty-icon">🏗️</div>
+        <p class="empty-title">Aucune installation</p>
+        <p class="empty-hint">Achetez un bâtiment dans la boutique →</p>
       </div>`;
     return;
   }
 
-  // Pour chaque bâtiment possédé, créer ou mettre à jour sa bande
   ownedBuildings.forEach(([key, building]) => {
     let strip = zoneEl.querySelector(`[data-strip="${key}"]`);
 
     if (!strip) {
-      // Créer la bande
       strip = document.createElement("div");
       strip.className = "building-strip";
       strip.dataset.strip = key;
+      strip.style.setProperty("--strip-color",  BUILDING_COLORS[key]  || "#00E5FF");
+      strip.style.setProperty("--scroll-speed", SCROLL_SPEEDS[key]    || "10s");
 
-      const assets = BUILDING_ASSETS[key] || {};
-      const bgUrl = assets.bg || "";
-      const spriteUrl = assets.sprite || "";
-
+      const { bg = "", sprite = "" } = BUILDING_ASSETS[key] || {};
       strip.innerHTML = `
-        <div class="building-strip-bg" style="background-image: url('${bgUrl}')"></div>
-        <span class="building-strip-count" data-strip-count="${key}">×${building.count}</span>
+        <div class="building-strip-bg" style="background-image: url('${bg}')"></div>
+        <div class="strip-header">
+          <span class="strip-name">${building.name}</span>
+          <span class="strip-badge">
+            <span class="strip-count" data-strip-count="${key}">×${building.count}</span>
+            <span class="strip-cps"   data-strip-cps="${key}"></span>
+          </span>
+        </div>
         <div class="building-sprites" data-strip-sprites="${key}"></div>
       `;
 
-      // Insérer dans le bon ordre (selon BUILDING_DEFINITIONS)
-      const allKeys = Object.keys(BUILDING_DEFINITIONS);
-      const keyIndex = allKeys.indexOf(key);
-      const existingStrips = [...zoneEl.querySelectorAll("[data-strip]")];
-      const insertBefore = existingStrips.find(el => allKeys.indexOf(el.dataset.strip) > keyIndex);
-      if (insertBefore) {
-        zoneEl.insertBefore(strip, insertBefore);
-      } else {
-        zoneEl.appendChild(strip);
-      }
+      const allKeys      = Object.keys(BUILDING_DEFINITIONS);
+      const keyIndex     = allKeys.indexOf(key);
+      const existing     = [...zoneEl.querySelectorAll("[data-strip]")];
+      const insertBefore = existing.find(el => allKeys.indexOf(el.dataset.strip) > keyIndex);
+      insertBefore ? zoneEl.insertBefore(strip, insertBefore) : zoneEl.appendChild(strip);
     }
 
-    // Mettre à jour le compteur
+    // Compteur
     const countEl = strip.querySelector(`[data-strip-count="${key}"]`);
     if (countEl) countEl.textContent = `×${building.count}`;
 
-    // Mettre à jour les sprites
+    // CPS contribution
+    const cpsEl = strip.querySelector(`[data-strip-cps="${key}"]`);
+    if (cpsEl) {
+      const cps = getBuildingCpsContribution(key);
+      cpsEl.textContent = cps > 0 ? `${formatNumber(cps)}/s` : "";
+    }
+
+    // Sprites
     const spritesEl = strip.querySelector(`[data-strip-sprites="${key}"]`);
     if (spritesEl) {
-      const assets = BUILDING_ASSETS[key] || {};
-      const spriteUrl = assets.sprite;
+      const { sprite: spriteUrl } = BUILDING_ASSETS[key] || {};
       const displayCount = Math.min(building.count, getSpriteCapacity(strip));
-      const currentCount = spritesEl.children.length;
 
-      while (spritesEl.children.length > displayCount) {
-        spritesEl.lastElementChild.remove();
-      }
+      while (spritesEl.children.length > displayCount) spritesEl.lastElementChild.remove();
 
-      if (displayCount > currentCount && spriteUrl) {
-        // Ajouter les sprites manquants
-        for (let i = currentCount; i < displayCount; i++) {
-          const img = document.createElement("img");
-          img.className = "building-sprite";
-          img.src = spriteUrl;
-          img.alt = building.name;
-          spritesEl.appendChild(img);
-        }
-      } else if (!spriteUrl && spritesEl.children.length < displayCount) {
-        // Fallback emoji si pas de sprite image disponible
-        for (let i = spritesEl.children.length; i < displayCount; i++) {
-          const span = document.createElement("span");
-          span.className = "building-sprite";
-          span.textContent = building.icon;
-          span.style.cssText = "font-size:2rem; width:auto; height:auto; filter:none;";
-          spritesEl.appendChild(span);
+      if (displayCount > spritesEl.children.length) {
+        if (spriteUrl) {
+          for (let i = spritesEl.children.length; i < displayCount; i++) {
+            const img = document.createElement("img");
+            img.className = "building-sprite";
+            img.src       = spriteUrl;
+            img.alt       = building.name;
+            spritesEl.appendChild(img);
+          }
+        } else {
+          for (let i = spritesEl.children.length; i < displayCount; i++) {
+            const span = document.createElement("span");
+            span.className = "building-sprite";
+            span.textContent = building.icon;
+            span.style.cssText = "font-size:2rem;width:auto;height:auto;filter:none;";
+            spritesEl.appendChild(span);
+          }
         }
       }
     }
   });
 
-  // Supprimer les bandes de bâtiments qui n'ont plus 0 unités
+  // Nettoyer les strips de bâtiments vendus / sans unités
   zoneEl.querySelectorAll("[data-strip]").forEach(strip => {
     const key = strip.dataset.strip;
-    if (!gameState.buildings[key] || gameState.buildings[key].count === 0) {
-      strip.remove();
-    }
+    if (!gameState.buildings[key]?.count) strip.remove();
   });
 
-  // Cacher le message vide s'il reste
   const emptyEl = zoneEl.querySelector(".buildings-empty");
   if (emptyEl) emptyEl.remove();
 }
