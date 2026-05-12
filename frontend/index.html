@@ -54,7 +54,7 @@
           <span id="planetDesc" class="planet-desc">Une planète rocheuse hostile.</span>
         </div>
         <div class="planet-wrap">
-          <canvas id="orbitCanvas" width="400" height="400" class="orbit-canvas"></canvas>
+          <canvas id="orbitCanvas" width="340" height="340" class="orbit-canvas"></canvas>
           <button id="planetButton" class="planet-button" aria-label="Miner des cristaux">
             <canvas id="planetCanvas" width="200" height="200"></canvas>
           </button>
@@ -97,7 +97,9 @@
       <section class="buildings-zone" id="buildingsZone">
         <!-- Les bandes de bâtiments sont injectées dynamiquement par JS -->
         <div class="buildings-empty">
-          <span>Achetez votre premier bâtiment pour commencer l'exploitation ! 🚀</span>
+          <div class="empty-icon">🏗️</div>
+          <p class="empty-title">Aucune installation</p>
+          <p class="empty-hint">Achetez un bâtiment dans la boutique →</p>
         </div>
       </section>
 

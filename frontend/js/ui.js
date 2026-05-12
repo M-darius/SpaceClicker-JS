@@ -1,5 +1,5 @@
 import { ACHIEVEMENTS } from "./achievements.js";
-import { BUILDING_DEFINITIONS, gameState, getBuildingBulkCost, getBuildingCost, getCurrentPlanet, getCurrentThreshold, getMaxBuyableCount, getNextPlanet, UPGRADE_DEFINITIONS } from "./game.js";
+import { BUILDING_DEFINITIONS, gameState, getBuildingBulkCost, getCurrentPlanet, getCurrentThreshold, getMaxBuyableCount, getNextPlanet, UPGRADE_DEFINITIONS } from "./game.js";
 
 const CRYSTAL_IMG = `<img class="crystal-icon" src="assets/batiment/Crystals.png" alt="💎">`;
 
@@ -190,12 +190,23 @@ const BUILDING_BG = {
   megastr:  "assets/batiment/bg_megastr.jpg",
 };
 
+const BUILDING_SPRITE = {
+  drone:    "assets/batiment/sprite_drone.png",
+  mine:     "assets/batiment/sprite_mine.png",
+  refinery: "assets/batiment/sprite_rafinerie.png",
+  lab:      "assets/batiment/sprite_labo.png",
+  geotherm: "assets/batiment/sprite_forage.png",
+  orbital:  "assets/batiment/sprite_station.png",
+  reactor:  "assets/batiment/sprite_reactor.png",
+  megastr:  "assets/batiment/sprite_structure.png",
+};
+
 export function renderShop() {
   els.buildingsList.innerHTML = Object.entries(BUILDING_DEFINITIONS).map(([key, building]) => {
     const bg = BUILDING_BG[key] ? `style="background-image: url('${BUILDING_BG[key]}')"` : "";
     return `
     <button class="shop-card shop-card--building" data-building="${key}" ${bg}>
-      ${buildingIconHTML(building.icon)}
+      ${buildingIconHTML(BUILDING_SPRITE[key])}
       <span class="shop-info">
         <strong>${building.name}</strong>
         <small><span data-building-cost="${key}"></span> ${CRYSTAL_IMG} · +<span class="base-cps">${formatNumber(building.baseCps)}/s</span></small>
@@ -410,7 +421,7 @@ function drawBeam(sx, sy, color1, color2, pulse) {
 
 function drawOrbitEffects(t) {
   if (!orbitCtx) return;
-  orbitCtx.clearRect(0, 0, 400, 400);
+  orbitCtx.clearRect(0, 0, 340, 340);
 
   CLICK_ORBIT_DEFS.forEach(def => {
     if (!gameState.upgrades[def.key]) return;
@@ -458,7 +469,7 @@ function startOrbitLoop() {
   orbitAnimId = requestAnimationFrame(loop);
 }
 
-export function updateOrbitIcons() {
+function updateOrbitIcons() {
   if (!orbitCtx) initOrbitCanvas();
   if (!orbitCtx) return;
   const anyUnlocked = gameState.upgrades.click1 || gameState.upgrades.click2 || gameState.upgrades.click3;
@@ -510,7 +521,7 @@ export function updateUI() {
     if (els.destPlanetIcon) els.destPlanetIcon.innerHTML = `<img src="${next.iconImg}" alt="${next.name}" class="dest-planet-img">`;
     if (els.destPlanetName) els.destPlanetName.textContent = next.name;
     els.prestigeLabel.innerHTML = `${formatNumber(gameState.crystalsThisPrestige)} / ${formatNumber(threshold)} ${CRYSTAL_IMG}`;
-    els.prestigeButton.textContent = `Coloniser ${next.name} ${next.icon}`;
+    els.prestigeButton.textContent = `Coloniser ${next.name} 🚀`;
   } else {
     if (els.destPlanetIcon) els.destPlanetIcon.innerHTML = "🏆";
     if (els.destPlanetName) els.destPlanetName.textContent = "Maîtres de l'Univers";

@@ -1,52 +1,58 @@
 # Space Clicker
 
-Space Clicker est une première version jouable d'un idle/clicker spatial. Le joueur mine des cristaux, achète des bâtiments automatiques, débloque des améliorations, gagne des succès et peut sauvegarder sa progression avec un compte.
+Idle clicker spatial en JavaScript vanilla. Le joueur mine des cristaux sur une planète animée, construit des installations automatiques, achète des améliorations et colonise de nouvelles planètes via un système de prestige.
 
-## Installation
+## Lancer le projet
 
 ```bash
 npm install
 npm start
 ```
 
-L'API démarre par défaut sur `http://localhost:3000`.
+Le serveur démarre sur `http://localhost:3000`. Express sert à la fois l'API et le frontend depuis le même port.
 
-Le serveur Express sert aussi le frontend. Après `npm start`, ouvrez `http://localhost:3000` pour jouer avec l'API et l'interface sur la même origine.
+## Variables d'environnement
 
-## Configuration
-
-Créez un fichier `.env` à la racine si nécessaire :
+Créez un `.env` à la racine du projet :
 
 ```env
 PORT=3000
 JWT_SECRET=une-cle-longue-et-secrete
-DATABASE_PATH=./backend/space-clicker.sqlite
-CORS_ORIGIN=http://localhost:5173,http://localhost:8888
+DATABASE_PATH=./backend/space-clicker.db
+CORS_ORIGIN=http://localhost:3000
 ```
 
-Sans `.env`, le projet fonctionne en mode développement avec une clé JWT par défaut et une base SQLite créée dans `backend/space-clicker.sqlite`.
+Sans `.env`, le projet fonctionne avec une clé JWT par défaut (`dev-secret-space-clicker`) et une base SQLite dans `backend/space-clicker.db`. Ne pas laisser la clé par défaut en production.
 
 ## Fonctionnalités
 
-- Clic sur une planète animée pour miner des cristaux.
-- Production automatique par bâtiments avec coût exponentiel.
-- Améliorations permanentes de session : foreuses, IA et moteur warp.
-- Prestige disponible à partir de 1 000 000 cristaux cumulés.
-- 15 succès avec badges et notifications animées.
-- Authentification JWT avec mots de passe hashés par bcrypt.
-- Sauvegarde distante via Express et SQLite, ou sauvegarde locale sans compte.
-- Classement des 10 meilleurs joueurs par cristaux cumulés.
+- Planètes animées par spritesheet canvas — 8 planètes débloquées par prestige
+- 8 bâtiments avec coût exponentiel (`baseCost × 1.15^count`), achat en ×1 / ×10 / ×100 / MAX
+- Tooltips de production en temps réel sur chaque bâtiment
+- Sprites orbitaux sur la planète au fil des améliorations de clic
+- Prestige : réinitialise les bâtiments et upgrades contre un multiplicateur ×1.5 permanent
+- Gains hors-ligne calculés au chargement (max 8h)
+- 25 succès avec notifications
+- Sauvegarde distante via JWT + SQLite, auto-save toutes les 30 secondes
+- Classement des 10 meilleurs joueurs (pour tester créer à chaque fois un nouveau joueur)
 
 ## API
 
-- `POST /api/auth/register` avec `{ "username": "...", "password": "..." }`
-- `POST /api/auth/login` avec `{ "username": "...", "password": "..." }`
-- `GET /api/save` avec `Authorization: Bearer <token>`
-- `POST /api/save` avec `Authorization: Bearer <token>` et `{ "gameState": { ... } }`
-- `GET /api/leaderboard`
+```
+POST /api/auth/register    { username, password }
+POST /api/auth/login       { username, password }
+GET  /api/save             Authorization: Bearer <token>
+POST /api/save             Authorization: Bearer <token>  { gameState }
+GET  /api/leaderboard
+GET  /api/health
+```
 
-## Choix techniques
+## Stack
 
-Le frontend utilise JavaScript vanilla en modules ES pour garder une séparation claire entre moteur de jeu, boutique, succès, interface et API. Le backend Express reste volontairement simple et adapté à Render. SQLite avec `better-sqlite3` convient bien à une première version persistante : installation légère, requêtes synchrones rapides et aucune infrastructure externe nécessaire.
+**Frontend** — HTML/CSS/JS vanilla, modules ES6, canvas 2D, Google Fonts (Exo 2 + Space Mono). Pas de bundler, pas de framework.
 
-Pour Netlify, déployez le dossier `frontend`. Pour Render, déployez la racine du projet avec la commande `npm start` et définissez `JWT_SECRET` dans les variables d'environnement. En déploiement séparé, exposez l'URL publique de l'API dans `window.SPACE_CLICKER_API_URL` avant le chargement de `js/main.js`.
+**Backend** — Node.js, Express, `sql.js` (SQLite en pure JS, compatible Render sans compilation native), `bcryptjs`, `jsonwebtoken`.
+
+## Déploiement sur Render
+
+Déployez la racine du projet avec la commande de démarrage `npm start`. Définissez `JWT_SECRET` et `PORT` dans les variables d'environnement Render. La base SQLite est éphémère sur le plan gratuit (recréée à chaque redéploiement).

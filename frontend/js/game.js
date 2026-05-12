@@ -1,13 +1,13 @@
 // Progression narrative : tu atterris sur une planète, tu l'exploites de fond en comble, puis tu colonises la suivante.
 export const BUILDING_DEFINITIONS = {
-  drone:    { count: 0, baseCps: 10000000,     baseCost: 15,            name: "Drone explorateur",         icon: "assets/batiment/sprite_drone.png"     },
-  mine:     { count: 0, baseCps: 0.5,     baseCost: 200,           name: "Mine de cristaux",          icon: "assets/batiment/sprite_mine.png"      },
-  refinery: { count: 0, baseCps: 3,       baseCost: 2_000,         name: "Raffinerie",                icon: "assets/batiment/sprite_rafinerie.png" },
-  lab:      { count: 0, baseCps: 10,      baseCost: 16_000,        name: "Laboratoire",               icon: "assets/batiment/sprite_labo.png"      },
-  geotherm: { count: 0, baseCps: 40,      baseCost: 100_000,       name: "Forage géothermique",       icon: "assets/batiment/sprite_forage.png"    },
-  orbital:  { count: 0, baseCps: 500,     baseCost: 1_000_000,     name: "Station orbitale",          icon: "assets/batiment/sprite_station.png"   },
-  reactor:  { count: 0, baseCps: 5_000,   baseCost: 50_000_000,    name: "Réacteur planétaire",       icon: "assets/batiment/sprite_reactor.png"   },
-  megastr:  { count: 0, baseCps: 100_000, baseCost: 5_000_000_000, name: "Réseau de méga-structures", icon: "assets/batiment/sprite_structure.png" }
+  drone:    { count: 0, baseCps: 0.1,       baseCost: 15,            name: "Drone explorateur"         },
+  mine:     { count: 0, baseCps: 0.5,       baseCost: 200,           name: "Mine de cristaux"          },
+  refinery: { count: 0, baseCps: 3,         baseCost: 2_000,         name: "Raffinerie"                },
+  lab:      { count: 0, baseCps: 10,        baseCost: 16_000,        name: "Laboratoire"               },
+  geotherm: { count: 0, baseCps: 40,        baseCost: 100_000,       name: "Forage géothermique"       },
+  orbital:  { count: 0, baseCps: 500,       baseCost: 1_000_000,     name: "Station orbitale"          },
+  reactor:  { count: 0, baseCps: 5_000,     baseCost: 50_000_000,    name: "Réacteur planétaire"       },
+  megastr:  { count: 0, baseCps: 100_000,   baseCost: 5_000_000_000, name: "Réseau de méga-structures" }
 };
 
 export const UPGRADE_DEFINITIONS = {

@@ -122,23 +122,13 @@ export function updateBuildingsZone() {
 
       while (spritesEl.children.length > displayCount) spritesEl.lastElementChild.remove();
 
-      if (displayCount > spritesEl.children.length) {
-        if (spriteUrl) {
-          for (let i = spritesEl.children.length; i < displayCount; i++) {
-            const img = document.createElement("img");
-            img.className = "building-sprite";
-            img.src       = spriteUrl;
-            img.alt       = building.name;
-            spritesEl.appendChild(img);
-          }
-        } else {
-          for (let i = spritesEl.children.length; i < displayCount; i++) {
-            const span = document.createElement("span");
-            span.className = "building-sprite";
-            span.textContent = building.icon;
-            span.style.cssText = "font-size:2rem;width:auto;height:auto;filter:none;";
-            spritesEl.appendChild(span);
-          }
+      if (displayCount > spritesEl.children.length && spriteUrl) {
+        for (let i = spritesEl.children.length; i < displayCount; i++) {
+          const img = document.createElement("img");
+          img.className = "building-sprite";
+          img.src       = spriteUrl;
+          img.alt       = building.name;
+          spritesEl.appendChild(img);
         }
       }
     }
