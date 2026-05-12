@@ -385,7 +385,8 @@ h2 { margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700; letter-spacing
   letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
 }
 .dest-planet-row { display: flex; align-items: center; gap: 0.5rem; }
-.dest-planet-icon { font-size: 1.4rem; line-height: 1; }
+.dest-planet-icon { font-size: 1.4rem; line-height: 1; display: flex; align-items: center; }
+.dest-planet-img  { width: 2rem; height: 2rem; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 0 6px rgba(245,166,35,0.4)); }
 .dest-planet-name {
   font-family: var(--font-ui); font-size: 1rem; font-weight: 700;
   color: var(--text); letter-spacing: 0.05em;
@@ -980,6 +981,133 @@ h2 { margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700; letter-spacing
   transition: filter 150ms;
 }
 .offline-close:hover { filter: brightness(1.1); }
+
+/* ── Modale confirmation prestige ── */
+.prestige-confirm-modal {
+  position: fixed; inset: 0; z-index: 80;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.pcm-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+}
+
+.pcm-box {
+  position: relative; z-index: 1;
+  width: min(22rem, calc(100vw - 2rem));
+  background: linear-gradient(160deg, #0d1528 0%, #080d1c 100%);
+  border: 1px solid rgba(245, 166, 35, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 0 40px rgba(245, 166, 35, 0.12), 0 0 0 1px rgba(0,229,255,0.06);
+  padding: 2rem 1.75rem 1.5rem;
+  text-align: center;
+  animation: pcmIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes pcmIn {
+  from { opacity: 0; transform: scale(0.88) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+.pcm-planet-icon {
+  font-size: 3rem;
+  line-height: 1;
+  margin-bottom: 0.75rem;
+  filter: drop-shadow(0 0 16px rgba(245, 166, 35, 0.5));
+  display: flex; align-items: center; justify-content: center;
+}
+.pcm-planet-img {
+  width: 4.5rem; height: 4.5rem;
+  object-fit: contain; image-rendering: pixelated;
+  filter: drop-shadow(0 0 18px rgba(245, 166, 35, 0.55));
+}
+
+.pcm-title {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.25rem;
+  opacity: 0.8;
+}
+
+.pcm-dest {
+  font-family: var(--font-ui);
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.35rem;
+}
+
+.pcm-desc {
+  font-family: var(--font-data);
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 1.1rem;
+}
+
+.pcm-bonus {
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(245, 166, 35, 0.06);
+  border: 1px solid rgba(245, 166, 35, 0.18);
+  border-radius: 8px;
+  padding: 0.55rem 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+.pcm-bonus-label {
+  font-family: var(--font-data);
+  font-size: 0.73rem;
+  color: var(--muted);
+}
+
+.pcm-bonus-value {
+  font-family: var(--font-data);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--amber);
+  text-shadow: 0 0 10px var(--amber-glow);
+}
+
+.pcm-warn {
+  font-size: 0.72rem;
+  color: rgba(168, 189, 212, 0.45);
+  margin: 0 0 1.25rem;
+  font-family: var(--font-data);
+}
+
+.pcm-actions {
+  display: flex; gap: 0.65rem;
+}
+
+.pcm-btn {
+  flex: 1; min-height: 2.5rem;
+  border-radius: 8px; border: none; cursor: pointer;
+  font-family: var(--font-ui); font-weight: 700;
+  font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;
+  transition: filter 150ms, transform 100ms;
+}
+.pcm-btn:active { transform: scale(0.96); }
+
+.pcm-cancel {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--muted);
+}
+.pcm-cancel:hover { filter: brightness(1.3); }
+
+.pcm-confirm {
+  background: linear-gradient(135deg, var(--amber-hot), var(--amber));
+  color: #120900;
+  box-shadow: 0 0 16px rgba(245, 166, 35, 0.35);
+}
+.pcm-confirm:hover { filter: brightness(1.1); }
 
 /* ── Voile logout ── */
 .reset-veil {

@@ -280,7 +280,7 @@ function startPlanetSprite(planet) {
   if (!planetCtx) initPlanetCanvas();
   if (!planetCtx) return;
   const img = new Image();
-  img.src = planet.img;
+  img.src = `${planet.img}?t=${Date.now()}`;
   img.onload = () => {
     spriteImage = img;
     const sprite = planet.sprite || { columns: 1, rows: 1, frameMs: 120 };
@@ -507,12 +507,12 @@ export function updateUI() {
   }
 
   if (next) {
-    if (els.destPlanetIcon) els.destPlanetIcon.textContent = next.icon;
+    if (els.destPlanetIcon) els.destPlanetIcon.innerHTML = `<img src="${next.iconImg}" alt="${next.name}" class="dest-planet-img">`;
     if (els.destPlanetName) els.destPlanetName.textContent = next.name;
     els.prestigeLabel.innerHTML = `${formatNumber(gameState.crystalsThisPrestige)} / ${formatNumber(threshold)} ${CRYSTAL_IMG}`;
     els.prestigeButton.textContent = `Coloniser ${next.name} ${next.icon}`;
   } else {
-    if (els.destPlanetIcon) els.destPlanetIcon.textContent = "🏆";
+    if (els.destPlanetIcon) els.destPlanetIcon.innerHTML = "🏆";
     if (els.destPlanetName) els.destPlanetName.textContent = "Maîtres de l'Univers";
     els.prestigeLabel.innerHTML = `${formatNumber(gameState.crystalsThisPrestige)} / ${formatNumber(threshold)} ${CRYSTAL_IMG}`;
     els.prestigeButton.textContent = "Dernier saut 🚀";
@@ -542,7 +542,7 @@ export function updateShopState() {
     const rawQty = buyMode === "max" ? getMaxBuyableCount(key) : buyMode;
     const displayQty = rawQty > 0 ? rawQty : 1;
     const cost = getBuildingBulkCost(key, displayQty);
-    const canAfford = rawQty > 0;
+    const canAfford = buyMode === "max" ? rawQty > 0 : gameState.crystals >= cost;
 
     document.querySelector(`[data-building-cost="${key}"]`).textContent = formatNumber(cost);
     document.querySelector(`[data-building-count="${key}"]`).textContent = gameState.buildings[key].count;

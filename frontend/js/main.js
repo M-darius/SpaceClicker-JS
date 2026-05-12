@@ -1,6 +1,6 @@
 import { checkAchievements, setAchievementCallback } from "./achievements.js";
 import { fetchLeaderboard, getSession, loadSave, login, logout, register, saveGame } from "./api.js";
-import { canPrestige, computeOfflineGains, gameState, getMaxBuyableCount, mergeLoadedState, mineCrystal, performPrestige, resetGame, setGameCallbacks, startGameLoop } from "./game.js";
+import { canPrestige, computeOfflineGains, gameState, getMaxBuyableCount, getNextPlanet, mergeLoadedState, mineCrystal, performPrestige, resetGame, setGameCallbacks, startGameLoop } from "./game.js";
 import { buyBuilding, buyUpgrade, setShopCallbacks } from "./shop.js";
 import { initBuildingsZone, updateBuildingsZone } from "./buildings-zone.js";
 import {
@@ -86,6 +86,56 @@ function initStatsModal() {
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
 }
 
+function showPrestigeModal() {
+  const existing = document.getElementById("prestigeConfirmModal");
+  if (existing) existing.remove();
+
+  const next = getNextPlanet();
+  const newMult = (gameState.prestigeMultiplier * 1.5).toFixed(2);
+  const destIcon = next
+    ? `<img src="${next.iconImg}" alt="${next.name}" class="dest-planet-img pcm-planet-img">`
+    : "🏆";
+  const destName = next ? next.name : "Maîtres de l'Univers";
+  const destDesc = next ? next.description : "Vous avez conquis tous les mondes connus.";
+
+  const modal = document.createElement("div");
+  modal.id = "prestigeConfirmModal";
+  modal.className = "prestige-confirm-modal";
+  modal.innerHTML = `
+    <div class="pcm-backdrop"></div>
+    <div class="pcm-box">
+      <div class="pcm-planet-icon">${destIcon}</div>
+      <div class="pcm-title">Colonisation imminente</div>
+      <div class="pcm-dest">${destName}</div>
+      <div class="pcm-desc">${destDesc}</div>
+      <div class="pcm-bonus">
+        <span class="pcm-bonus-label">Nouveau multiplicateur</span>
+        <span class="pcm-bonus-value">×${newMult}</span>
+      </div>
+      <p class="pcm-warn">Vos bâtiments et améliorations seront réinitialisés.</p>
+      <div class="pcm-actions">
+        <button class="pcm-btn pcm-cancel">Annuler</button>
+        <button class="pcm-btn pcm-confirm">Coloniser 🚀</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  const close = () => modal.remove();
+  const confirm = async () => {
+    modal.remove();
+    performPrestige();
+    await persistGame(true);
+  };
+
+  modal.querySelector(".pcm-cancel").addEventListener("click", close);
+  modal.querySelector(".pcm-confirm").addEventListener("click", confirm);
+  modal.querySelector(".pcm-backdrop").addEventListener("click", close);
+  const onKey = e => { if (e.key === "Escape") { close(); document.removeEventListener("keydown", onKey); } };
+  document.addEventListener("keydown", onKey);
+}
+
 function bindEvents() {
   document.getElementById("planetButton").addEventListener("click", (event) => {
     const amount = mineCrystal();
@@ -114,10 +164,7 @@ function bindEvents() {
   });
 
   document.getElementById("prestigeButton").addEventListener("click", () => {
-    if (canPrestige() && confirm("Coloniser une nouvelle planète et recommencer avec un bonus permanent ?")) {
-      performPrestige();
-      persistGame(true);
-    }
+    if (canPrestige()) showPrestigeModal();
   });
 
   document.getElementById("authToggle").addEventListener("click", () => toggleAuthPanel());
