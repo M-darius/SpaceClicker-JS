@@ -252,6 +252,7 @@ Sans `.env`, le projet fonctionne avec une clé JWT par défaut (`dev-secret-spa
 **Backend** - Node.js, Express, `sql.js` (SQLite en pure JS), `bcryptjs`, `jsonwebtoken`, `dotenv`.
 
 **Asset** - pour la plupart des visuelles l'IA leonardo.ai a été utilisée.
+
 ---
 
 ## Déploiement sur Render
