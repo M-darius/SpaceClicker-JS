@@ -2,6 +2,7 @@ import { checkAchievements, setAchievementCallback } from "./achievements.js";
 import { fetchLeaderboard, getSession, loadSave, login, logout, register, saveGame } from "./api.js";
 import { canPrestige, computeOfflineGains, gameState, getMaxBuyableCount, getNextPlanet, mergeLoadedState, mineCrystal, performPrestige, resetGame, setGameCallbacks, startGameLoop } from "./game.js";
 import { buyBuilding, buyUpgrade, setShopCallbacks } from "./shop.js";
+import { initBonusSystem } from "./bonuses.js";
 import { initBuildingsZone, updateBuildingsZone } from "./buildings-zone.js";
 import {
   getBuyMode,
@@ -236,6 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadExistingSave();
   await refreshLeaderboard();
   startGameLoop();
+  initBonusSystem();
 
   window.setInterval(() => persistGame(false), 30_000);
 });

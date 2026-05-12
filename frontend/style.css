@@ -1124,6 +1124,282 @@ h2 { margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700; letter-spacing
 @keyframes fadeOut { to   { opacity: 0; transform: translateX(110%); } }
 @keyframes floatUp { to   { opacity: 0; transform: translateY(-3rem) scale(1.12); } }
 
+/* ── Objets cosmiques (bonus events) ── */
+.cosmic-object {
+  position: fixed;
+  z-index: 900;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  filter: drop-shadow(0 0 10px var(--co-glow));
+}
+
+/* ── Trajectoires par type ── */
+
+/* Astéroïde : chute diagonale haut-droite → bas-gauche, rotation */
+@keyframes co-fly-asteroid {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+  5%   { opacity: 1; }
+  88%  { opacity: 1; }
+  to   { transform: translate(var(--co-end-x), var(--co-end-y)) rotate(var(--co-rot, 720deg)); opacity: 0; }
+}
+.co-fly-asteroid {
+  animation: co-fly-asteroid var(--co-duration, 6s) ease-in forwards;
+}
+
+/* Tempête solaire : arc sweeping depuis la droite */
+@keyframes co-fly-solar {
+  0%   { transform: translate(0, 0);                                                              opacity: 0; }
+  7%   { opacity: 1; }
+  30%  { transform: translate(calc(var(--co-end-x) * 0.3),  var(--co-arc-y, 55px)); }
+  60%  { transform: translate(calc(var(--co-end-x) * 0.6),  calc(var(--co-arc-y, 55px) * 0.2)); }
+  88%  { opacity: 1; }
+  to   { transform: translate(var(--co-end-x), 0);                                               opacity: 0; }
+}
+.co-fly-solar {
+  animation: co-fly-solar var(--co-duration, 12s) ease-in-out forwards;
+}
+
+/* Quasar : montée diagonale bas-gauche → haut-droite avec pulsation */
+@keyframes co-fly-quasar {
+  0%   { transform: translate(0, 0) scale(0.85); opacity: 0; }
+  7%   { opacity: 1; }
+  40%  { transform: translate(calc(var(--co-end-x) * 0.4), calc(var(--co-end-y) * 0.4)) scale(1.1); }
+  70%  { transform: translate(calc(var(--co-end-x) * 0.7), calc(var(--co-end-y) * 0.7)) scale(0.95); }
+  88%  { opacity: 1; }
+  to   { transform: translate(var(--co-end-x), var(--co-end-y)) scale(1); opacity: 0; }
+}
+.co-fly-quasar {
+  animation: co-fly-quasar var(--co-duration, 10s) ease-in-out forwards;
+}
+
+/* Trou Noir : dérive lente depuis la gauche avec oscillation verticale */
+@keyframes co-fly-blackhole {
+  0%   { transform: translate(0, 0);                                                                 opacity: 0; }
+  8%   { opacity: 1; }
+  25%  { transform: translate(calc(var(--co-end-x) * 0.25),  var(--co-wobble, 28px)); }
+  50%  { transform: translate(calc(var(--co-end-x) * 0.5),   0); }
+  75%  { transform: translate(calc(var(--co-end-x) * 0.75),  calc(var(--co-wobble, 28px) * -1)); }
+  90%  { opacity: 1; }
+  to   { transform: translate(var(--co-end-x), 0);                                                  opacity: 0; }
+}
+.co-fly-blackhole {
+  animation: co-fly-blackhole var(--co-duration, 18s) linear forwards;
+}
+
+/* ── Corps de l'objet ── */
+.co-body {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(5, 8, 22, 0.88);
+  border: 1.5px solid var(--co-color);
+  border-radius: 2rem;
+  padding: 0.4rem 1rem 0.4rem 0.55rem;
+  box-shadow: 0 0 20px var(--co-glow), inset 0 0 10px rgba(255,255,255,0.03);
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+/* Traîne (pointe vers la gauche, sens du mouvement droite par défaut) */
+.co-body::before {
+  content: "";
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(to left, var(--co-color), transparent);
+  border-radius: 2px;
+  filter: blur(1.5px);
+  opacity: 0.75;
+}
+
+/* Astéroïde : traîne inclinée vers le haut-droite */
+.co--asteroid .co-body::before {
+  right: auto;
+  left: 100%;
+  transform: translateY(-50%) rotate(-40deg);
+  transform-origin: left center;
+  background: linear-gradient(to right, var(--co-color), transparent);
+}
+
+/* Quasar : traîne vers le bas-gauche */
+.co--quasar .co-body::before {
+  top: auto;
+  bottom: 100%;
+  right: 30%;
+  transform: rotate(40deg);
+  transform-origin: bottom center;
+  width: 60px;
+  height: 4px;
+}
+
+.cosmic-object:hover .co-body {
+  box-shadow: 0 0 40px var(--co-glow), 0 0 70px var(--co-glow), inset 0 0 10px rgba(255,255,255,0.07);
+  border-color: #fff;
+}
+
+.co-icon   { font-size: 1.5rem; line-height: 1; }
+.co-sprite { width: 40px; height: 40px; image-rendering: pixelated; display: block; }
+
+.co-label {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--co-color);
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 8px var(--co-glow);
+}
+
+.co-desc {
+  font-family: var(--font-data);
+  font-size: 0.62rem;
+  color: rgba(232, 244, 253, 0.55);
+}
+
+/* ── Animations de fin ── */
+@keyframes co-burst {
+  0%   { transform: scale(1);   opacity: 1; filter: drop-shadow(0 0 12px var(--co-glow, #fff)); }
+  35%  { transform: scale(2.6); opacity: 0.8; filter: drop-shadow(0 0 50px var(--co-glow, #fff)) brightness(2.2); }
+  100% { transform: scale(0.1); opacity: 0; }
+}
+.co-burst {
+  animation: co-burst 0.52s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes co-exit-quiet {
+  to { opacity: 0; transform: scale(0.5); }
+}
+.co-exit-quiet {
+  animation: co-exit-quiet 0.45s ease-in forwards;
+  pointer-events: none;
+}
+
+/* ── Popup de confirmation ── */
+.co-popup {
+  position: fixed;
+  z-index: 920;
+  width: 230px;
+  background: rgba(5, 8, 22, 0.97);
+  border: 1.5px solid var(--co-color);
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 0 30px var(--co-glow), 0 8px 40px rgba(0,0,0,0.6);
+  backdrop-filter: blur(14px);
+  opacity: 0;
+  transform: scale(0.85) translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+.co-popup--visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+.co-popup-icon .co-sprite { width: 56px; height: 56px; }
+
+.co-popup-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--co-color);
+  text-align: center;
+  text-shadow: 0 0 10px var(--co-glow);
+}
+
+.co-popup-detail {
+  font-size: 0.78rem;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.45;
+}
+
+.co-popup-dur {
+  font-family: var(--font-data);
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+.co-popup-timer {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.co-popup-timer-fill {
+  height: 100%;
+  width: 100%;
+  background: var(--co-color);
+  border-radius: 2px;
+  transform-origin: left center;
+}
+.co-popup-timer-fill--running {
+  animation: co-timer-drain var(--confirm-ms, 6000ms) linear forwards;
+}
+@keyframes co-timer-drain {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+.co-popup-actions {
+  display: flex;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.co-popup-collect,
+.co-popup-pass {
+  flex: 1;
+  padding: 0.42rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.1s;
+}
+
+.co-popup-collect {
+  background: var(--co-color);
+  color: #050810;
+}
+.co-popup-collect:hover { filter: brightness(1.15); }
+
+.co-popup-pass {
+  background: rgba(255,255,255,0.07);
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.co-popup-pass:hover { background: rgba(255,255,255,0.13); color: var(--text); }
+
+/* ── Notification bonus ── */
+.bonus-notif {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(5, 8, 22, 0.96);
+  border-left: 3px solid var(--co-color, #F5A623);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  animation: slideIn 0.35s ease-out, fadeOut 0.5s ease-in 3.7s forwards;
+}
+
+.bonus-notif-icon { font-size: 1.4rem; line-height: 1; display: flex; align-items: center; }
+.bonus-notif-icon .co-sprite { width: 28px; height: 28px; }
+.bonus-notif strong { display: block; font-size: 0.84rem; color: var(--co-color, #F5A623); }
+.bonus-notif small  { font-size: 0.74rem; color: var(--muted); }
+
 /* ── Responsive ── */
 @media (max-width: 1100px) {
   .game-layout { grid-template-columns: 18rem 1fr 18rem; }

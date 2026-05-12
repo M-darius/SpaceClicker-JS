@@ -1,48 +1,48 @@
 // Progression narrative : tu atterris sur une planète, tu l'exploites de fond en comble, puis tu colonises la suivante.
 export const BUILDING_DEFINITIONS = {
-  drone:    { count: 0, baseCps: 0.1,       baseCost: 15,            name: "Drone explorateur"         },
-  mine:     { count: 0, baseCps: 0.5,       baseCost: 200,           name: "Mine de cristaux"          },
-  refinery: { count: 0, baseCps: 3,         baseCost: 2_000,         name: "Raffinerie"                },
-  lab:      { count: 0, baseCps: 10,        baseCost: 16_000,        name: "Laboratoire"               },
-  geotherm: { count: 0, baseCps: 40,        baseCost: 100_000,       name: "Forage géothermique"       },
-  orbital:  { count: 0, baseCps: 500,       baseCost: 1_000_000,     name: "Station orbitale"          },
-  reactor:  { count: 0, baseCps: 5_000,     baseCost: 50_000_000,    name: "Réacteur planétaire"       },
-  megastr:  { count: 0, baseCps: 100_000,   baseCost: 5_000_000_000, name: "Réseau de méga-structures" }
+  drone:    { count: 0, baseCps: 0.1,       baseCost: 15,              name: "Drone explorateur"         },
+  mine:     { count: 0, baseCps: 1,         baseCost: 80,              name: "Mine de cristaux"          },
+  refinery: { count: 0, baseCps: 5,         baseCost: 700,             name: "Raffinerie"                },
+  lab:      { count: 0, baseCps: 18,        baseCost: 5_000,           name: "Laboratoire"               },
+  geotherm: { count: 0, baseCps: 60,        baseCost: 35_000,          name: "Forage géothermique"       },
+  orbital:  { count: 0, baseCps: 600,       baseCost: 400_000,         name: "Station orbitale"          },
+  reactor:  { count: 0, baseCps: 7_000,     baseCost: 15_000_000,      name: "Réacteur planétaire"       },
+  megastr:  { count: 0, baseCps: 120_000,   baseCost: 1_500_000_000,   name: "Réseau de méga-structures" }
 };
 
 export const UPGRADE_DEFINITIONS = {
   // ── Améliorations de clic (3 paliers) ──────────────────────────────────────
   click1: { name: "Pioche renforcée",       cost: 100,           description: "×2 cristaux par clic.",  icon: "assets/batiment/sprite_pioche.png",          applies: "click",    multiplier: 2  },
-  click2: { name: "Laser de minage",        cost: 5_000,         description: "×4 cristaux par clic.",  icon: "assets/batiment/sprite_spaceDrill.png",       applies: "click",    multiplier: 4  },
-  click3: { name: "Foreuse quantique",      cost: 500_000,       description: "×10 cristaux par clic.", icon: "assets/batiment/sprite_ForeuseQuantique.png", applies: "click",    multiplier: 10 },
+  click2: { name: "Laser de minage",        cost: 2_500,         description: "×4 cristaux par clic.",  icon: "assets/batiment/sprite_spaceDrill.png",       applies: "click",    multiplier: 4  },
+  click3: { name: "Foreuse quantique",      cost: 200_000,       description: "×10 cristaux par clic.", icon: "assets/batiment/sprite_ForeuseQuantique.png", applies: "click",    multiplier: 10 },
 
   // ── Drones (2 paliers) ────────────────────────────────────────────────────
   drone1: { name: "Cartographie IA",        cost: 500,           description: "×2 production des drones.",           icon: "assets/batiment/sprite_Cartographie.png", applies: "drone",    multiplier: 2 },
-  drone2: { name: "Essaim autonome",        cost: 20_000,        description: "×3 production des drones.",           icon: "assets/batiment/sprite_Essaim.png",        applies: "drone",    multiplier: 3 },
+  drone2: { name: "Essaim autonome",        cost: 10_000,        description: "×3 production des drones.",           icon: "assets/batiment/sprite_Essaim.png",        applies: "drone",    multiplier: 3 },
 
   // ── Mines (2 paliers) ─────────────────────────────────────────────────────
-  mine1:  { name: "Explosifs plasma",       cost: 5_000,         description: "×2 production des mines.",            icon: "assets/batiment/sprite_Explosifs.png",     applies: "mine",     multiplier: 2 },
-  mine2:  { name: "Tunneliers nanobots",    cost: 100_000,       description: "×3 production des mines.",            icon: "assets/batiment/sprite_Tunneliers.png",    applies: "mine",     multiplier: 3 },
+  mine1:  { name: "Explosifs plasma",       cost: 2_000,         description: "×2 production des mines.",            icon: "assets/batiment/sprite_Explosifs.png",     applies: "mine",     multiplier: 2 },
+  mine2:  { name: "Tunneliers nanobots",    cost: 50_000,        description: "×3 production des mines.",            icon: "assets/batiment/sprite_Tunneliers.png",    applies: "mine",     multiplier: 3 },
 
   // ── Raffineries (2 paliers) ───────────────────────────────────────────────
-  ref1:   { name: "Filtres moléculaires",   cost: 50_000,        description: "×2 production des raffineries.",      icon: "assets/batiment/sprite_moleculaires.png",  applies: "refinery", multiplier: 2 },
-  ref2:   { name: "Purification quantique", cost: 800_000,       description: "×3 production des raffineries.",      icon: "assets/batiment/sprite_Purification.png",  applies: "refinery", multiplier: 3 },
+  ref1:   { name: "Filtres moléculaires",   cost: 20_000,        description: "×2 production des raffineries.",      icon: "assets/batiment/sprite_moleculaires.png",  applies: "refinery", multiplier: 2 },
+  ref2:   { name: "Purification quantique", cost: 300_000,       description: "×3 production des raffineries.",      icon: "assets/batiment/sprite_Purification.png",  applies: "refinery", multiplier: 3 },
 
   // ── Laboratoires (2 paliers) ──────────────────────────────────────────────
-  lab1:   { name: "IA de recherche",        cost: 500_000,       description: "×2 production des laboratoires.",     icon: "assets/batiment/sprite_IA.png",            applies: "lab",      multiplier: 2 },
-  lab2:   { name: "Simulation quantique",   cost: 8_000_000,     description: "×3 production des laboratoires.",     icon: "assets/batiment/sprite_quantique.png",     applies: "lab",      multiplier: 3 },
+  lab1:   { name: "IA de recherche",        cost: 200_000,       description: "×2 production des laboratoires.",     icon: "assets/batiment/sprite_IA.png",            applies: "lab",      multiplier: 2 },
+  lab2:   { name: "Simulation quantique",   cost: 3_000_000,     description: "×3 production des laboratoires.",     icon: "assets/batiment/sprite_quantique.png",     applies: "lab",      multiplier: 3 },
 
   // ── Forages géothermiques (2 paliers) ─────────────────────────────────────
-  geo1:   { name: "Sondes de profondeur",   cost: 5_000_000,     description: "×3 production des forages.",          icon: "assets/batiment/sprite_Sonde.png",         applies: "geotherm", multiplier: 3 },
-  geo2:   { name: "Noyau artificiel",       cost: 80_000_000,    description: "×5 production des forages.",          icon: "assets/batiment/sprite_Noyau.png",         applies: "geotherm", multiplier: 5 },
+  geo1:   { name: "Sondes de profondeur",   cost: 2_000_000,     description: "×3 production des forages.",          icon: "assets/batiment/sprite_Sonde.png",         applies: "geotherm", multiplier: 3 },
+  geo2:   { name: "Noyau artificiel",       cost: 30_000_000,    description: "×5 production des forages.",          icon: "assets/batiment/sprite_Noyau.png",         applies: "geotherm", multiplier: 5 },
 
   // ── Stations orbitales (2 paliers) ────────────────────────────────────────
-  orb1:   { name: "Télescopes mineurs",     cost: 100_000_000,   description: "×3 production des stations.",         icon: "assets/batiment/sprite_Telescopes.png",    applies: "orbital",  multiplier: 3 },
-  orb2:   { name: "Réseau de satellites",   cost: 2_000_000_000, description: "×5 production des stations.",         icon: "assets/batiment/sprite_Reseau.png",        applies: "orbital",  multiplier: 5 },
+  orb1:   { name: "Télescopes mineurs",     cost: 40_000_000,    description: "×3 production des stations.",         icon: "assets/batiment/sprite_Telescopes.png",    applies: "orbital",  multiplier: 3 },
+  orb2:   { name: "Réseau de satellites",   cost: 800_000_000,   description: "×5 production des stations.",         icon: "assets/batiment/sprite_Reseau.png",        applies: "orbital",  multiplier: 5 },
 
   // ── Multiplicateur global CPS ─────────────────────────────────────────────
-  globalBoost1: { name: "Cristaux éthérés",   cost: 1_000_000,   description: "×1.5 sur toute la production.", icon: "assets/batiment/sprite_Cristaux.png", applies: "global", multiplier: 1.5 },
-  globalBoost2: { name: "Résonance cosmique", cost: 500_000_000, description: "×2 sur toute la production.",   icon: "assets/batiment/sprite_cosmique.png", applies: "global", multiplier: 2   }
+  globalBoost1: { name: "Cristaux éthérés",   cost: 400_000,     description: "×1.5 sur toute la production.", icon: "assets/batiment/sprite_Cristaux.png", applies: "global", multiplier: 1.5 },
+  globalBoost2: { name: "Résonance cosmique", cost: 200_000_000, description: "×2 sur toute la production.",   icon: "assets/batiment/sprite_cosmique.png", applies: "global", multiplier: 2   }
 };
 
 // Séquence de planètes à coloniser — seuil croissant et thème différent à chaque fois.
@@ -62,6 +62,24 @@ export const gameState = createDefaultGameState();
 let tickHandler = () => {};
 let achievementHandler = () => {};
 let loopId = null;
+
+// Bonus temporaires (non persistés)
+export const activeBonuses = [];
+
+export function cleanExpiredBonuses() {
+  const now = Date.now();
+  const valid = activeBonuses.filter(b => b.expiresAt > now);
+  if (valid.length === activeBonuses.length) return false;
+  activeBonuses.splice(0, activeBonuses.length, ...valid);
+  return true;
+}
+
+export function addActiveBonus(id, target, multiplier, durationMs) {
+  activeBonuses.push({ id, target, multiplier, expiresAt: Date.now() + durationMs });
+  if (target === 'cps')   recalculateCps();
+  if (target === 'click') recalculateClickPower();
+  tickHandler();
+}
 
 function cloneBuildings() {
   return Object.fromEntries(
@@ -123,6 +141,10 @@ export function setGameCallbacks({ onTick, onAchievements } = {}) {
 export function startGameLoop() {
   if (loopId) clearInterval(loopId);
   loopId = setInterval(() => {
+    if (cleanExpiredBonuses()) {
+      recalculateCps();
+      recalculateClickPower();
+    }
     const produced = gameState.crystalsPerSecond / 10;
     gameState.crystals += produced;
     gameState.totalCrystalsEver += produced;
@@ -192,7 +214,11 @@ export function recalculateCps() {
     total += buildingCps;
   });
 
-  gameState.crystalsPerSecond = total * globalMultiplier * gameState.prestigeMultiplier;
+  const now = Date.now();
+  const cpsBonusMult = activeBonuses
+    .filter(b => b.target === 'cps' && b.expiresAt > now)
+    .reduce((acc, b) => acc * b.multiplier, 1);
+  gameState.crystalsPerSecond = total * globalMultiplier * gameState.prestigeMultiplier * cpsBonusMult;
 }
 
 export function recalculateClickPower() {
@@ -203,7 +229,11 @@ export function recalculateClickPower() {
       clickMultiplier *= upgrade.multiplier;
     }
   });
-  gameState.crystalsPerClick = clickMultiplier * gameState.prestigeMultiplier;
+  const now = Date.now();
+  const clickBonusMult = activeBonuses
+    .filter(b => b.target === 'click' && b.expiresAt > now)
+    .reduce((acc, b) => acc * b.multiplier, 1);
+  gameState.crystalsPerClick = clickMultiplier * gameState.prestigeMultiplier * clickBonusMult;
 }
 
 export function canPrestige() {
